@@ -40,6 +40,13 @@ RUN cd /tmp && \
     make -j8 && \
     make install
 
-# enable ECMAScript in elinks
+# configure ELinks
 RUN mkdir -p /root/.elinks
-RUN echo 'set ecmascript.enable = 1' > /root/.elinks/elinks.conf
+RUN echo 'set ecmascript.enable = 1\n\
+set document.browse.forms.confirm_submit = 0\n\
+set connection.ssl.cert_verify = 0\n\
+' > /root/.elinks/elinks.conf
+
+# update root certs
+RUN sed -i '/DST_Root_CA_X3.crt/d' /etc/ca-certificates.conf
+RUN update-ca-certificates
